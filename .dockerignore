@@ -1,0 +1,6 @@
+__pycache__
+*.pyc
+data/
+.git
+*.md
+小说文本.txt

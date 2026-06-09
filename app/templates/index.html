@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>命运之路 — 交互式文字冒险</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        body {
+            background: #0a0a0a;
+        }
+    </style>
+</head>
+<body>
+    <div class="terminal theme-default">
+        <!-- 标题栏 -->
+        <div class="terminal-header">
+            <div class="terminal-dots">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+            </div>
+            <span class="terminal-title">ROAD OF DESTINY — TERMINAL v1.0</span>
+            <span class="terminal-path">~</span>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="terminal-body" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+
+            <!-- ASCII 艺术标题 -->
+            <div class="ascii-title" style="font-size:0.55em;color:#ffcc00;text-shadow:0 0 15px rgba(255,204,0,0.5);">
+   ██████╗  ██████╗  █████╗ ██████╗      ██████╗ ███████╗
+   ██╔══██╗██╔═══██╗██╔══██╗██╔══██╗    ██╔═══██╗██╔════╝
+   ██████╔╝██║   ██║███████║██║  ██║    ██║   ██║█████╗  
+   ██╔══██╗██║   ██║██╔══██║██║  ██║    ██║   ██║██╔══╝  
+   ██║  ██║╚██████╔╝██║  ██║██████╔╝    ╚██████╔╝██║     
+   ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚═════╝      ╚═════╝ ╚═╝     
+            </div>
+
+            <div class="ascii-title" style="font-size:0.5em;color:#ff6600;">
+   ██████╗ ███████╗███████╗████████╗██╗███╗   ██╗██╗   ██╗
+   ██╔══██╗██╔════╝██╔════╝╚══██╔══╝██║████╗  ██║╚██╗ ██╔╝
+   ██║  ██║█████╗  ███████╗   ██║   ██║██╔██╗ ██║ ╚████╔╝ 
+   ██║  ██║██╔══╝  ╚════██║   ██║   ██║██║╚██╗██║  ╚██╔╝  
+   ██████╔╝███████╗███████║   ██║   ██║██║ ╚████║   ██║   
+   ╚═════╝ ╚══════╝╚══════╝   ╚═╝   ╚═╝╚═╝  ╚═══╝   ╚═╝   
+            </div>
+
+            <div class="scene-divider">▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</div>
+
+            <div class="line" style="color:#33ff33;margin:16px 0;">
+   > 基于 欧·亨利 同名短篇小说 | 交互式文字冒险游戏
+            </div>
+            <div class="line dim" style="margin-bottom:6px;">
+   > 你 是 大 卫 · 米 尼 奥 —— 韦尔努瓦村的牧羊人，也是一个心怀梦想的诗人。
+            </div>
+            <div class="line dim" style="margin-bottom:6px;">
+   > 命运在月光下分成了三条路。你的每一个选择，都将改变命运的走向。
+            </div>
+            <div class="line" style="color:#ff69b4;margin-bottom:20px;">
+   > 🌟 留心寻找藏在选项中的彩蛋与幽默！[按数字键选择]
+            </div>
+
+            <div class="scene-divider">▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</div>
+
+            <!-- 新游戏按钮 -->
+            <div style="margin:20px 0;">
+                <a href="/game/new" id="new-game-link"
+                   style="display:inline-block;padding:14px 40px;font-size:1.1em;font-family:'Share Tech Mono',monospace;
+                          color:#33ff33;border:2px solid #33ff33;text-decoration:none;letter-spacing:2px;
+                          transition:all 0.3s;text-shadow:0 0 8px rgba(51,255,51,0.4);"
+                   onmouseover="this.style.background='rgba(51,255,51,0.15)';this.style.boxShadow='0 0 20px rgba(51,255,51,0.3)';"
+                   onmouseout="this.style.background='transparent';this.style.boxShadow='none';">
+                    [ ENTER ] 开 始 命 运 之 旅
+                </a>
+            </div>
+
+            <div style="color:#333;font-size:0.65em;margin-bottom:16px;" id="token-display"></div>
+
+            <!-- 重置进度 -->
+            <div style="margin-top:10px;">
+                <a href="#" onclick="localStorage.clear();alert('所有本地数据已清除。刷新页面生效。');location.reload();"
+                   style="color:#444;font-size:0.7em;text-decoration:none;"
+                   onmouseover="this.style.color='#ff4444';" onmouseout="this.style.color='#444';">
+                   [ RESET ALL PROGRESS ]
+                </a>
+            </div>
+
+            <!-- 存档列表 -->
+            {% if saves %}
+            <div class="scene-divider" style="margin-top:20px;">──────────────────────────────────────────────</div>
+            <div class="line accent" style="margin:10px 0;">> 继续冒险:</div>
+            <div style="width:100%;max-width:600px;">
+                {% for save in saves %}
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;margin:4px 0;border:1px solid var(--border-dim);font-size:0.8em;">
+                    <span style="color:#33ff33;">[{{ loop.index }}] {{ save.player_name }}</span>
+                    <span style="color:#1a8c1a;margin:0 10px;">{{ save.path }}</span>
+                    <span style="color:#666;font-size:0.85em;">{{ save.updated_at }}</span>
+                    <a href="/game/load/{{ save.id }}" style="color:#ffcc00;text-decoration:none;margin-left:10px;"
+                       onmouseover="this.style.color='#fff';" onmouseout="this.style.color='#ffcc00';">[LOAD]</a>
+                    <a href="/game/delete/{{ save.id }}" style="color:#ff3333;text-decoration:none;margin-left:6px;"
+                       onclick="return confirm('删除存档?')"
+                       onmouseover="this.style.color='#ff6666';" onmouseout="this.style.color='#ff3333';">[DEL]</a>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            <div class="scene-divider" style="margin-top:24px;">▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</div>
+
+            <div class="line dim" style="margin-top:15px;font-size:0.75em;">
+   「我在路上寻找我未来的命运，带着真诚而坚强的心。」
+            </div>
+            <div class="line dim" style="font-size:0.7em;margin-bottom:20px;">
+   —— 大卫·米尼奥
+            </div>
+
+            <!-- 类型光标 -->
+            <span class="cursor-blink"></span>
+        </div>
+
+        <!-- 底部状态栏 -->
+        <div class="terminal-footer">
+            <span class="footer-item">
+                <span class="footer-label">SYS</span>
+                <span class="footer-value">READY</span>
+            </span>
+            <span class="footer-item">
+                <span class="footer-label">BUILD</span>
+                <span class="footer-value">v1.0.0</span>
+            </span>
+            <span class="footer-item" style="margin-left:auto;">
+                <span class="footer-label">BASED ON</span>
+                <span class="footer-value">O. HENRY "ROADS OF DESTINY"</span>
+            </span>
+        </div>
+    </div>
+
+    <script>
+    // 生成/读取玩家令牌，实现存档隔离
+    (function() {
+        var token = localStorage.getItem('road_of_destiny_token');
+        if (!token) {
+            token = 'player_' + Math.random().toString(36).substr(2, 12) + '_' + Date.now().toString(36);
+            localStorage.setItem('road_of_destiny_token', token);
+        }
+        // 注入到所有游戏链接
+        document.querySelectorAll('a[href]').forEach(function(a) {
+            var href = a.getAttribute('href');
+            if (href.startsWith('/game/') || href === '/') {
+                var sep = href.indexOf('?') === -1 ? '?' : '&';
+                a.setAttribute('href', href + sep + 'token=' + token);
+            }
+        });
+        // 显示简短ID
+        var disp = document.getElementById('token-display');
+        if (disp) disp.textContent = '你的ID: ' + token.substr(0, 10) + '...';
+        // 首次加载时也带token访问首页
+        if (window.location.search.indexOf('token=') === -1) {
+            window.location.search = 'token=' + token;
+        }
+    })();
+    </script>
+</body>
+</html>

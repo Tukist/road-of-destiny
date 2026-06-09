@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  game:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DATABASE_URL=sqlite:///./data/game.db
+    restart: unless-stopped

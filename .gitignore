@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+*.pyo
+data/
+*.db
+build/
+dist/
+*.spec
+*.exe
+.env
+.DS_Store
+Thumbs.db

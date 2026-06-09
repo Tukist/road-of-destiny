@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ scene.title }} — 命运之路</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-scene-id="{{ scene.id }}" data-theme="{{ theme }}" data-egg-count="{{ easter_egg_count }}" data-scene-sound="{{ scene_sound }}" data-save-flags="{{ flags_json }}">
+    <div class="terminal theme-{{ theme }}">
+        <!-- 标题栏 -->
+        <div class="terminal-header">
+            <div class="terminal-dots">
+                <span class="terminal-dot red"></span>
+                <span class="terminal-dot yellow"></span>
+                <span class="terminal-dot green"></span>
+            </div>
+            <span class="terminal-title">ROAD OF DESTINY — TERMINAL v1.0</span>
+            <span class="terminal-path">{{ path_name }} &gt;</span>
+        </div>
+
+        <!-- 内容区 -->
+        <div class="terminal-body hide-scrollbar" id="narrative-body">
+
+            <!-- ASCII 场景标题 -->
+            <div class="ascii-title">
+┌──────────────────────────────────────────────────┐
+</div>
+            <div class="ascii-title">
+│  {{ scene.title }}
+</div>
+            <div class="ascii-title">
+└──────────────────────────────────────────────────┘
+            </div>
+
+            <div class="scene-divider">▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</div>
+
+            <!-- 叙事文本 — 每个 p 转为一个 .line -->
+            {% for para in narrative_lines %}
+            <div class="line {% if para.type %}{{ para.type }}{% endif %}">{{ para.text }}</div>
+            {% endfor %}
+
+            {% if ending_info %}
+            <div class="scene-divider">▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬</div>
+            <div class="line danger">[ {{ ending_info.type }} ] {{ ending_info.name }}</div>
+            <div class="line dim">{{ ending_info.desc }}</div>
+            <div class="line dim">──────────────────────────────────────────────────</div>
+            {% endif %}
+
+            <!-- 选项区 -->
+            <div id="choices-container" class="choices-container" style="display:none;">
+                <div class="choice-prompt">
+                    <span class="prompt-symbol">❯</span> 请选择 [1-{{ choices|length }}]:
+                </div>
+                {% for choice in choices %}
+                <form method="POST" action="/game/choose/{{ save_id }}" class="choice-form">
+                    <input type="hidden" name="choice_index" value="{{ choice.index }}">
+                    <div class="choice-item {% if choice.is_easter_egg %}choice-easter{% endif %}" tabindex="0">
+                        <span class="choice-number">[{{ choice.index + 1 }}]</span>
+                        <span class="choice-text">{{ choice.text }}</span>
+                    </div>
+                </form>
+                {% endfor %}
+            </div>
+
+            <!-- 光标闪烁（打字中显示） -->
+            <div id="typing-cursor" class="cursor-blink"></div>
+        </div>
+
+        <!-- 底部状态栏 -->
+        <div class="terminal-footer">
+            <span class="footer-item">
+                <span class="footer-label">👤</span>
+                <span class="footer-value">{{ player_name }}</span>
+            </span>
+            <span class="footer-item">
+                <span class="footer-label">🗺</span>
+                <span class="footer-value">{{ path_name }}</span>
+            </span>
+            <span class="footer-item">
+                <span class="footer-label">🥚</span>
+                <span class="footer-value">{{ easter_egg_count }}</span>
+            </span>
+            <span class="footer-item" style="margin-left:auto;">
+                <a href="/" style="color:inherit;text-decoration:none;">[HOME]</a>
+            </span>
+        </div>
+    </div>
+
+    <input type="hidden" id="save-id" value="{{ save_id }}">
+
+    <script>
+        // 打字完成后隐藏光标
+        const origInit = window.TerminalGame ? TerminalGame.init : null;
+    </script>
+    <script src="/static/script.js"></script>
+    <script>
+        // 监听打字完成
+        const observer = new MutationObserver(() => {
+            const cursor = document.getElementById('typing-cursor');
+            const choices = document.getElementById('choices-container');
+            if (cursor && choices && choices.style.display === 'block') {
+                cursor.style.display = 'none';
+            }
+        });
+        observer.observe(document.getElementById('choices-container'), {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+    </script>
+</body>
+</html>
