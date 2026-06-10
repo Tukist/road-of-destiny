@@ -1,5 +1,5 @@
 app = "road-of-destiny"
-primary_region = "nrt"  # 东京，亚洲访问快
+primary_region = "sjc"
 
 [build]
   dockerfile = "Dockerfile"
