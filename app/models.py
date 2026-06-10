@@ -2,17 +2,22 @@ from sqlalchemy import create_engine, Column, Integer, String, DateTime, Foreign
 from sqlalchemy.orm import declarative_base, sessionmaker, relationship
 from datetime import datetime
 import os
+import sys
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./data/game_v2.db")
 
-# 自动创建数据库文件所在目录
-db_path = DATABASE_URL.replace("sqlite:///", "")
-if db_path.startswith("./"):
-    db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), db_path[2:])
-db_dir = os.path.dirname(db_path)
-os.makedirs(db_dir, exist_ok=True)
+# PyInstaller 冻结：DB 放 exe 同目录
+if getattr(sys, 'frozen', False):
+    db_dir = os.path.dirname(sys.executable)
+    db_path = os.path.join(db_dir, "game_data.db")
+else:
+    db_path = DATABASE_URL.replace("sqlite:///", "")
+    if db_path.startswith("./"):
+        db_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), db_path[2:])
+    db_dir = os.path.dirname(db_path)
+    os.makedirs(db_dir, exist_ok=True)
 
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+engine = create_engine(f"sqlite:///{db_path}", connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 Base = declarative_base()
 

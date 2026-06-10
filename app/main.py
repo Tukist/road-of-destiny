@@ -6,6 +6,7 @@
 import json
 import os
 import re
+import sys
 from fastapi import FastAPI, Request, Depends, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -18,10 +19,14 @@ from .models import init_db, get_db, Player, SaveGame
 from .game_engine import GameEngine
 from .game_data import SCENES
 
-# 获取绝对路径
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_DIR = os.path.join(BASE_DIR, "static")
-TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
+# PyInstaller 冻结支持：sys._MEIPASS 是临时解压目录
+if getattr(sys, 'frozen', False):
+    BASE_DIR = sys._MEIPASS
+else:
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+STATIC_DIR = os.path.join(BASE_DIR, "app", "static")
+TEMPLATES_DIR = os.path.join(BASE_DIR, "app", "templates")
 
 app = FastAPI(title="命运之路 — 交互式文字冒险", version="1.0.0")
 
