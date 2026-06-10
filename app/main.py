@@ -22,11 +22,12 @@ from .game_data import SCENES
 # PyInstaller 冻结支持：sys._MEIPASS 是临时解压目录
 if getattr(sys, 'frozen', False):
     BASE_DIR = sys._MEIPASS
+    STATIC_DIR = os.path.join(BASE_DIR, "app", "static")
+    TEMPLATES_DIR = os.path.join(BASE_DIR, "app", "templates")
 else:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-STATIC_DIR = os.path.join(BASE_DIR, "app", "static")
-TEMPLATES_DIR = os.path.join(BASE_DIR, "app", "templates")
+    STATIC_DIR = os.path.join(BASE_DIR, "static")
+    TEMPLATES_DIR = os.path.join(BASE_DIR, "templates")
 
 app = FastAPI(title="命运之路 — 交互式文字冒险", version="1.0.0")
 
