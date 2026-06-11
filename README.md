@@ -14,6 +14,10 @@
 
 ## 快速开始
 
+### 网站
+
+https://road-of-destiny.onrender.com/
+
 ### Docker（推荐）
 
 ```bash
@@ -57,6 +61,7 @@ python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
 | `X` | 保留的后门调试按钮 彩蛋+1 |
 | `A` | 保留的后门调试按钮 解锁全结局 |
 
+如果你*不可挽回*地使用了调试按钮点击HOME回到主界面选择[ RESET ALL PROGRESS ]重新开始这一切吧
 ## 技术栈
 
 - Python / FastAPI
